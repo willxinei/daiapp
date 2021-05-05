@@ -1,0 +1,12 @@
+{
+  "name": "daiapp",
+  "displayName": "daiapp",
+  "expo": {
+    "name": "daiapp",
+    "slug": "daiapp",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
