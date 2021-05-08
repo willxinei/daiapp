@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable import/prefer-default-export */
 export const cores = {
    rosa: '#DFC5C5',
@@ -8,3 +9,9 @@ export const cores = {
       cinza_Escuro: '#585858',
    },
 };
+
+// export function convertHours(time: string) {
+//    const [hour, minutes] = time.split(':').map(Number);
+//    const timeInMinutes = hour * 60 + minutes;
+//    return timeInMinutes;
+// }
