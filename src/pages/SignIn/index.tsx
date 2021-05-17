@@ -1,14 +1,31 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
-import { Alert, ScrollView } from 'react-native';
+import {
+   Alert,
+   Animated,
+   KeyboardAvoidingView,
+   Platform,
+   ScrollView,
+   StyleSheet,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
-import { Container, Tilte, BackContainer, ImageLogo, LogText } from './styles';
+import {
+   Container,
+   Tilte,
+   Content,
+   BackContainer,
+   CriarContaText,
+   ImageLogo,
+   LogText,
+   Forgot,
+   ForgotText,
+} from './styles';
 import Input from '../../components/Input';
-import Logo from '../../assets/Lg.png';
+import Logo from '../../assets/logo.png';
 import { useAuth } from '../../hooks/AuthContext';
 import Button from '../../components/Button';
 import getValidationErrors from '../../utils/getValidationsErrors';
@@ -21,6 +38,8 @@ interface SignInFormData {
 const SingIn: React.FC = () => {
    const { signIn } = useAuth();
    const { navigate } = useNavigation();
+   const [offSet] = useState(new Animated.ValueXY({ x: 0, y: 80 }));
+   const [opacit] = useState(new Animated.Value(0));
    const formRef = useRef<FormHandles>(null);
 
    const handleSignIn = useCallback(
@@ -62,52 +81,79 @@ const SingIn: React.FC = () => {
       navigate('SignUp');
    }, [navigate]);
 
+   useEffect(() => {
+      Animated.parallel([
+         Animated.spring(offSet.y, {
+            toValue: 0,
+            speed: 1,
+            bounciness: 5,
+            useNativeDriver: true,
+         }),
+         Animated.timing(opacit, {
+            toValue: 1,
+            duration: 700,
+            useNativeDriver: true,
+         }),
+      ]).start();
+   }, [offSet.y, opacit]);
+
+   const styles = StyleSheet.create({
+      container: {
+         alignItems: 'center',
+         justifyContent: 'center',
+         width: '90%',
+      },
+   });
+
    return (
-      <>
-         <ScrollView
-            contentContainerStyle={{ flex: 1 }}
-            keyboardShouldPersistTaps="handled"
+      <Container behavior="padding">
+         <Animated.View
+            style={[
+               styles.container,
+               {
+                  opacity: opacit,
+                  transform: [{ translateY: offSet.y }],
+               },
+            ]}
          >
-            <Container>
-               <ImageLogo source={Logo} />
+            <ImageLogo source={Logo} />
 
-               <LogText>DESIGNER</LogText>
-               <LogText>DE UNHAS</LogText>
+            <Tilte>Entre com uma conta</Tilte>
 
-               <Tilte>Faça o login</Tilte>
+            <Form ref={formRef} onSubmit={handleSignIn}>
+               <Input
+                  name="email"
+                  icon="mail"
+                  placeholder="E-mail"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+               />
+               <Input
+                  name="password"
+                  icon="lock"
+                  placeholder="Senha"
+                  secureTextEntry
+               />
 
-               <Form ref={formRef} onSubmit={handleSignIn}>
-                  <Input
-                     name="email"
-                     icon="mail"
-                     placeholder="E-mail"
-                     keyboardType="email-address"
-                     autoCapitalize="none"
-                  />
-                  <Input
-                     name="password"
-                     icon="lock"
-                     placeholder="Senha"
-                     secureTextEntry
-                  />
-
-                  <Button
-                     onPress={() => {
-                        formRef.current?.submitForm();
-                     }}
-                  >
-                     Entrar
-                  </Button>
-               </Form>
-            </Container>
-         </ScrollView>
-         <BackContainer onPress={navigateToSingUp}>
-            <Feather name="log-out" size={20} />
-            <Tilte style={{ marginLeft: 15, marginTop: 0 }}>
-               Criar uma conta
-            </Tilte>
-         </BackContainer>
-      </>
+               <Button
+                  onPress={() => {
+                     formRef.current?.submitForm();
+                  }}
+               >
+                  Entrar
+               </Button>
+            </Form>
+            <BackContainer onPress={navigateToSingUp}>
+               <Feather name="log-out" size={20} />
+               <CriarContaText style={{ marginLeft: 15, marginTop: 0 }}>
+                  Criar uma conta
+               </CriarContaText>
+            </BackContainer>
+         </Animated.View>
+         <Forgot>
+            <ForgotText>Esqueci minha senha</ForgotText>
+         </Forgot>
+      </Container>
    );
 };
 

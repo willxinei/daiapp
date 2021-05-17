@@ -1,11 +1,10 @@
+/* eslint-disable camelcase */
 import { useNavigation, useRoute } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import Icon from 'react-native-vector-icons/Feather';
-import { Alert, Platform } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
-import { getDate, getDay, getMonth, getYear } from 'date-fns';
-import { useAuth } from '../../hooks/AuthContext';
+import { Feather } from '@expo/vector-icons';
+import { Alert, Text, View } from 'react-native';
+import { getDate, getMonth, getYear } from 'date-fns';
+import CalendaPiker from '@react-native-community/datetimepicker';
 import { convertHours } from './Utils/StateFuncion';
 import {
    Container,
@@ -14,8 +13,6 @@ import {
    HeaderTitle,
    Calendario,
    Content,
-   Title,
-   Schedule,
    SectionContente,
    Hour,
    HourText,
@@ -24,6 +21,8 @@ import {
    HourContainer,
    HomeContainer,
    Linear,
+   OpenPikerButon,
+   OpenPickerText,
 } from './styles';
 
 import api from '../../services/api';
@@ -45,124 +44,50 @@ interface AvailavilityItem {
 }
 
 const CreateAppointment: React.FC = () => {
-   LocaleConfig.locales.ptBr = {
-      monthNames: [
-         'Janeiro',
-         'Fevereiro',
-         'Março',
-         'Abril',
-         'Maio',
-         'Junho',
-         'Julho',
-         'Agosto',
-         'Setembro',
-         'Outubro',
-         'Novembro',
-         'Dezembro',
-      ],
-      monthNamesShort: [
-         'Jan',
-         'Fev',
-         'Mar',
-         'Abr',
-         'Mai',
-         'Jun',
-         'Jul',
-         'Ago',
-         'Set',
-         'Out',
-         'Nov',
-         'Dez',
-      ],
-      dayNames: [
-         'Domingo',
-         'segunda',
-         'Terça',
-         'Quarta',
-         'Quinta',
-         'Sexta',
-         'Sábado',
-      ],
-      dayNamesShort: ['Dom', 'Seg', 'Ter', 'Quar', 'Quin', 'Sext', 'Sab'],
-   };
-   LocaleConfig.defaultLocale = 'ptBr';
-
    const route = useRoute();
    const routeParams = route.params as RouteParams;
    const { goBack, navigate } = useNavigation();
 
-   const [selectedProvider, setSelectedProvider] = useState(
-      routeParams.providerId,
-   );
+   const [selectedProvider] = useState(routeParams.providerId);
 
-   const [selectService, setService] = useState(routeParams.service);
-   const [selected, setSelect] = useState(new Date());
+   const [selectService] = useState(routeParams.service);
+   const [selectDia, setSelectDia] = useState(new Date());
    const [availability, setAvailability] = useState<AvailavilityItem[]>([]);
    const [selectHour, setSelectHour] = useState('');
+   const [showPider, setShowPiker] = useState(false);
+   const [disponivel, setDisponivel] = useState();
 
    const backToHome = useCallback(() => {
-      navigate('Dashboard');
+      navigate('Home');
    }, [navigate]);
-
-   const handleDate = useCallback(day => {
-      setSelect(day.dateString);
-   }, []);
 
    const handleSelectHour = useCallback((hour: string) => {
       setSelectHour(hour);
    }, []);
 
-   const handleHorarios = useCallback(() => {
-      const dat = new Date(selected);
-      const dia = getDate(dat) + 1;
-      const mes = getMonth(dat) + 1;
-      const ano = getYear(dat);
-      console.log(dia);
-      api.get(`provider/${selectedProvider}/dia`, {
-         params: {
-            mes,
-            ano,
-            dia,
-            service: selectService,
-         },
-      }).then(response => {
-         setAvailability(response.data);
-      });
-   }, [selected, selectedProvider, selectService]);
-
-   console.log(selectHour);
-
    const handleCreateAppointment = useCallback(async () => {
       try {
          const tempo = convertHours(selectHour);
-         const date = new Date(selected);
-         const dia = getDate(date) + 1;
+         const date = new Date(selectDia);
+         const dia = getDate(date);
          const mes = getMonth(date) + 1;
          const ano = getYear(date);
 
          const time = new Date(ano, mes - 1, dia, 0, tempo, 0);
-         console.log(time, date, selectHour, tempo);
-         await api
-            .post('appointment', {
-               provider_id: selectedProvider,
-               from: selectHour,
-               dia,
-               mes,
-               ano,
-               service: selectService,
-            })
-            .then(h => {
-               console.log(h.status, h.statusText);
-            });
+         await api.post('agendamento', {
+            provider_id: selectedProvider,
+            from: selectHour,
+            dia,
+            mes,
+            ano,
+            service: selectService,
+         });
 
-         navigate('AppointmentCreated', { date: time.getTime() });
+         navigate('AgendamentoCriado', { date: time.getTime() });
       } catch (err) {
-         Alert.alert(
-            'Erro ao criar agendamento',
-            'Ocorreu um erro ao tentar criar o agendamento',
-         );
+         Alert.alert('Erro ao criar agendamento', err.message);
       }
-   }, [navigate, selectHour, selectedProvider, selected, selectService]);
+   }, [navigate, selectHour, selectedProvider, selectDia, selectService]);
 
    const availabily = useMemo(() => {
       return availability.map(({ avaliable, hour }) => {
@@ -171,6 +96,45 @@ const CreateAppointment: React.FC = () => {
             avaliable,
             hourFormatted: hour,
          };
+      });
+   }, [availability]);
+
+   const hendleDatePiker = useCallback(() => {
+      function show() {
+         setShowPiker(state => !state);
+      }
+      show();
+   }, []);
+
+   const handleChange = useCallback((event: any, date: Date | undefined) => {
+      setShowPiker(false);
+      if (date) {
+         setSelectDia(date);
+      }
+   }, []);
+
+   useEffect(() => {
+      const dat = new Date(selectDia);
+      const dia = getDate(dat);
+      const mes = getMonth(dat) + 1;
+      const ano = getYear(dat);
+
+      api.get(`agendamento/h/horarios`, {
+         params: {
+            provider_id: selectedProvider,
+            mes,
+            ano,
+            dia,
+            service: selectService,
+         },
+      }).then(response => {
+         setAvailability(response.data);
+      });
+   }, [selectDia, selectService, selectedProvider]);
+
+   const handleDisponivel = useMemo(() => {
+      return availability.find(h => {
+         return h.avaliable === false;
       });
    }, [availability]);
 
@@ -188,34 +152,44 @@ const CreateAppointment: React.FC = () => {
                colors={['#f4b7b7', '#bf4e8a']}
             >
                <BackButton onPress={goBack}>
-                  <Icon name="chevron-left" size={28} color="#f3f3f3" />
+                  <Feather name="chevron-left" size={28} color="#f3f3f3" />
                </BackButton>
 
                <HeaderTitle>Pagina de Serviços</HeaderTitle>
                <HomeContainer onPress={backToHome}>
-                  <Icon name="home" size={28} color="#f3f3f3" />
+                  <Feather name="home" size={28} color="#f3f3f3" />
                </HomeContainer>
             </Linear>
          </Header>
 
          <Content>
-            <Calendario onPress={handleHorarios}>
-               <Calendar
-                  onDayPress={handleDate}
-                  markedDates={{
-                     [selected]: {
-                        selected: true,
-                        disableTouchEvent: true,
-                        selectedColor: '#bf4e8a',
-                        selectedTextColor: 'black',
-                     },
-                  }}
-               />
+            <Calendario>
+               <OpenPikerButon onPress={hendleDatePiker}>
+                  <OpenPickerText>Escolha uma data</OpenPickerText>
+               </OpenPikerButon>
+               {showPider && (
+                  <CalendaPiker onChange={handleChange} value={selectDia} />
+               )}
             </Calendario>
 
-            <Schedule>
-               <Title>Escolha um horario</Title>
+            {!handleDisponivel && (
+               <Text style={{ marginTop: 30, fontSize: 20 }}>
+                  Horários disponíveis
+               </Text>
+            )}
+            {handleDisponivel && (
+               <Text style={{ marginTop: 30, fontSize: 20 }}>
+                  {'    '}Nenhum Horário {'\n'} disponível para hoje
+               </Text>
+            )}
 
+            <View
+               style={{
+                  height: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+               }}
+            >
                <SectionContente>
                   {availabily.map(({ hourFormatted, hour, avaliable }) => (
                      <HourContainer
@@ -232,14 +206,11 @@ const CreateAppointment: React.FC = () => {
                      </HourContainer>
                   ))}
                </SectionContente>
-            </Schedule>
-
-            <CreateAppointmentButton onPress={handleCreateAppointment}>
-               <CreateAppointmentButtonText>
-                  Agendar
-               </CreateAppointmentButtonText>
-            </CreateAppointmentButton>
+            </View>
          </Content>
+         <CreateAppointmentButton onPress={handleCreateAppointment}>
+            <CreateAppointmentButtonText>Agendar</CreateAppointmentButtonText>
+         </CreateAppointmentButton>
       </Container>
    );
 };

@@ -1,11 +1,17 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable import/no-duplicates */
+/* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { format, getHours, intervalToDuration, isToday } from 'date-fns/esm';
+import { Alert, Image, Text } from 'react-native';
+import { Feather, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
+import { format, intervalToDuration, isAfter } from 'date-fns';
 import prBr from 'date-fns/locale/pt-BR';
+
 import { useNavigation } from '@react-navigation/core';
+import { isToday } from 'date-fns/esm';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
    Header,
    TitleName,
@@ -18,27 +24,26 @@ import {
    UserAvatar,
    ContainerText,
    Description,
-   Desmarcar,
-   BoxTwo,
-   Box,
-   AvatarBox,
-   Scroll,
    BoxAgenda,
    HorariosContainer,
    HpContainer,
-   HoraTitle,
    Hp,
    ButtonDelet,
    ButtonDeletText,
+   NexContainer,
+   Fundo,
+   Deteles,
 } from './styles';
 import { useAuth } from '../../hooks/AuthContext';
+import fundo from '../../assets/fundo.png';
 import api from '../../services/api';
+import { cores } from '../../utils/ferramentas';
 
 export interface Response {
    ano: number;
    mes: number;
    dia: number;
-   from: string;
+   from: number;
    service: string;
    id: string;
    provider: {
@@ -48,33 +53,33 @@ export interface Response {
 }
 
 const Home: React.FC = () => {
-   function convertHours(time: string) {
-      const [hour, minutes] = time.split(':').map(Number);
-      const timeInMinutes = hour * 60 + minutes;
-      return timeInMinutes;
-   }
    const data = new Date(Date.now());
    const dataFormat = format(data, 'EEEE dd/MM/yyyy', { locale: prBr });
 
-   const { user, signOut } = useAuth();
+   const { user } = useAuth();
    const { goBack, navigate } = useNavigation();
    const [agendamento, setAgendamento] = useState<Response[]>([]);
 
    useEffect(() => {
-      api.get('agendamento/me').then(h => {
-         setAgendamento(h.data);
-      });
+      try {
+         api.get('agendamento/me').then(h => {
+            setAgendamento(h.data);
+         });
+      } catch (err) {
+         console.log(err);
+      }
    }, []);
 
    const nexAg = useMemo(() => {
       return agendamento.find(h => {
-         const hour = convertHours(h.from);
-         const hourNow = getHours(new Date()) * 60;
-         return hour > hourNow;
+         const dia = new Date(h.ano, h.mes - 1, h.dia, 0, h.from);
+
+         if (isAfter(dia, new Date())) {
+            console.log(dia, new Date());
+            return h;
+         }
       });
    }, [agendamento]);
-
-   const hora = nexAg?.from as string;
 
    const navigateToSelectProviders = useCallback(() => {
       navigate('Prestador');
@@ -82,21 +87,34 @@ const Home: React.FC = () => {
 
    const afterAgendamentos = useMemo(() => {
       return agendamento.filter(h => {
-         const nexHour = convertHours(hora);
-         const hour = convertHours(h.from);
-         return hour > nexHour;
-      });
-   }, [agendamento, hora]);
+         if (nexAg) {
+            const dia = new Date(h.ano, h.mes, h.dia, 0, h.from, 0);
+            const nxdia = new Date(
+               nexAg.ano,
+               nexAg.mes,
+               nexAg.dia,
+               0,
+               nexAg.from,
+               0,
+            );
 
-   const handleCancel = useCallback(() => {
-      goBack();
-   }, [goBack]);
+            if (isAfter(dia, nxdia)) {
+               return h;
+            }
+         }
+         // return h;
+      });
+   }, [agendamento, nexAg]);
+
+   const navigateProfile = useCallback(() => {
+      navigate('Profile');
+   }, [navigate]);
 
    const handleDelete = useCallback(
-      (dia: number, mes: number, ano: number, horario: string, id: string) => {
+      (dia: number, mes: number, ano: number, horario: number, id: string) => {
          async function Delete(): Promise<void> {
             try {
-               await api.delete(`appointment/${id}/del`);
+               await api.delete(`agendamento/${id}/agendamento`);
 
                setAgendamento(agendamento.filter(h => h.id !== id));
             } catch (err) {
@@ -105,12 +123,11 @@ const Home: React.FC = () => {
          }
 
          const dateNow = new Date();
-         const horaConver = convertHours(horario);
-         const dateAgendada = new Date(ano, mes - 1, dia, 0, horaConver);
-         const canpare =
+         const dateAgendada = new Date(ano, mes - 1, dia, 0, horario);
+         const canpare: any =
             intervalToDuration({
-               end: dateAgendada,
                start: dateNow,
+               end: dateAgendada,
             }).hours + 1;
          console.log(canpare);
 
@@ -126,7 +143,6 @@ const Home: React.FC = () => {
                [
                   {
                      text: 'Cancel',
-                     onPress: handleCancel,
                      style: 'cancel',
                   },
                   {
@@ -137,35 +153,42 @@ const Home: React.FC = () => {
             );
          }
       },
-      [agendamento, handleCancel],
+      [agendamento],
    );
+
+   function formatd(ano: number, mes: number, dia: number, from: number) {
+      return format(new Date(ano, mes, dia, 0, from), 'HH:mm');
+   }
 
    return (
       <>
          <Container>
+            <Fundo source={fundo} />
             <Header>
                <TitleName>
-                  Bem vindo (a) {'\n'}
+                  Ola...{'\n'}
                   <Text>{user.name}</Text>
                </TitleName>
-               <Avatar source={{ uri: `${user.avatar_url}` }} />
+               <TouchableOpacity onPress={navigateProfile}>
+                  <Avatar source={{ uri: `${user.avatar_url}` }} />
+               </TouchableOpacity>
             </Header>
+
             <Title style={{ marginTop: 15 }}>{dataFormat}</Title>
 
             <Agendar onPress={navigateToSelectProviders}>
-               <Title style={{ color: '#730067', fontSize: 24 }}>
+               <Title style={{ color: '#000', fontSize: 20 }}>
                   Agendar um horário
                </Title>
             </Agendar>
 
-            <Title style={{ color: '#909090', marginTop: 30 }}>
-               Meu horários
-            </Title>
+            <NexContainer>
+               <Text style={{ fontSize: 20 }}>Horário a seguir</Text>
+            </NexContainer>
+
             <BodyContainer>
-               {/* {nexAg === undefined && (
-                  <Title>Sem horarios para hoje</Title>
-               )} */}
-               {nexAg && (
+               {nexAg === undefined && <Title>Sem horarios para hoje</Title>}
+               {isToday(data) && nexAg && (
                   <FirstBox>
                      <UserAvatar
                         source={{
@@ -173,17 +196,29 @@ const Home: React.FC = () => {
                         }}
                      />
                      <ContainerText>
-                        <Title style={{ marginBottom: 10 }}>
-                           Proximo horario
+                        <Title
+                           style={{
+                              marginBottom: 10,
+                              marginLeft: 30,
+                              color: `${cores.rosa}`,
+                              fontSize: 26,
+                           }}
+                        >
+                           {nexAg.provider.name}
                         </Title>
-                        <Description>
-                           Prestador: {nexAg.provider.name}
-                        </Description>
                         <Description>Serviço: {nexAg.service}</Description>
                         <Description>
                            Data: {nexAg.dia}/{nexAg.mes}/{nexAg.ano}
                         </Description>
-                        <Description>Horário: {nexAg.from}</Description>
+                        <Description>
+                           Horário:{' '}
+                           {formatd(
+                              nexAg.ano,
+                              nexAg.mes,
+                              nexAg.dia,
+                              nexAg.from,
+                           )}
+                        </Description>
                      </ContainerText>
                   </FirstBox>
                )}
@@ -194,25 +229,46 @@ const Home: React.FC = () => {
                      <>
                         <HorariosContainer>
                            <HpContainer>
-                              <HoraTitle>Horarios Agendados</HoraTitle>
-                              <Hp>Prestador: {h.provider.name}</Hp>
-                              <Hp>Serviço: {h.service}</Hp>
-                              <Hp />
-                              <Hp>Horário: {h.from}</Hp>
+                              <Deteles>
+                                 <SimpleLineIcons name="note" size={24} />
+
+                                 <Hp>{h.service}</Hp>
+                              </Deteles>
+
+                              <Deteles>
+                                 <MaterialIcons name="alarm" size={24} />
+                                 <Hp>
+                                    {format(
+                                       new Date(
+                                          h.ano,
+                                          h.mes - 1,
+                                          h.dia,
+                                          0,
+                                          h.from,
+                                          0,
+                                       ),
+                                       `dd/MM/yyyy 'as' HH:mm 'hs'`,
+                                    )}
+                                 </Hp>
+                              </Deteles>
+
+                              <Deteles>
+                                 <Feather name="trash-2" size={24} />
+                                 <ButtonDelet
+                                    onPress={() => {
+                                       handleDelete(
+                                          h.dia,
+                                          h.mes,
+                                          h.ano,
+                                          h.from,
+                                          h.id,
+                                       );
+                                    }}
+                                 >
+                                    <ButtonDeletText>Desmarcar</ButtonDeletText>
+                                 </ButtonDelet>
+                              </Deteles>
                            </HpContainer>
-                           <ButtonDelet
-                              onPress={() => {
-                                 handleDelete(
-                                    h.dia,
-                                    h.mes,
-                                    h.ano,
-                                    h.from,
-                                    h.id,
-                                 );
-                              }}
-                           >
-                              <ButtonDeletText>Desmarcar</ButtonDeletText>
-                           </ButtonDelet>
                         </HorariosContainer>
                      </>
                   )}
@@ -223,6 +279,3 @@ const Home: React.FC = () => {
    );
 };
 export default Home;
-function navigate(arg0: string) {
-   throw new Error('Function not implemented.');
-}

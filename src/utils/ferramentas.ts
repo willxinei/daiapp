@@ -4,7 +4,8 @@ export const cores = {
    rosa: '#DFC5C5',
    rosaClaro: '#FDF2ED',
    roxo: '#A56386',
-   branco: '#f2f2f2',
+   branco: '#f1f1f1',
+   fundo: '#FADDDF',
    texto: {
       cinza_Escuro: '#585858',
    },

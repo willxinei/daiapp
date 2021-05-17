@@ -7,14 +7,14 @@ import Routes from './src/routes';
 import AppProvider from './src/hooks';
 
 export default function App() {
-    return (
-        <NavigationContainer>
-            <AppProvider>
-                <View style={{ flex: 1 }}>
-                    <StatusBar hidden />
-                    <Routes />
-                </View>
-            </AppProvider>
-        </NavigationContainer>
-    );
+   return (
+      <NavigationContainer>
+         <AppProvider>
+            <View style={{ flex: 1 }}>
+               <StatusBar hidden />
+               <Routes />
+            </View>
+         </AppProvider>
+      </NavigationContainer>
+   );
 }

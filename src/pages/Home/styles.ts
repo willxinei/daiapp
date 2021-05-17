@@ -8,7 +8,7 @@ import { Response } from './index';
 export const Container = styled.View`
    flex: 1;
    align-items: center;
-   background: #d1b6be;
+   background: ${cores.branco};
 `;
 
 export const Header = styled.View`
@@ -18,23 +18,23 @@ export const Header = styled.View`
 
    /* fundo vriar conta */
 
-   background: rgba(253, 242, 237, 0.63);
+   background: ${cores.fundo};
    border-radius: 89.8522px;
-   padding: 15px 30px 0 30px;
+   padding: 15px 30px 0 35px;
    flex-direction: row;
    align-items: center;
    justify-content: space-between;
 `;
 
 export const TitleName = styled.Text`
-   font-size: 20px;
+   font-size: 24px;
 `;
 
 export const Avatar = styled.Image`
    width: 75px;
    height: 75px;
    border-radius: 40px;
-   background: #863aaa;
+   background: ${cores.branco};
 `;
 
 export const Title = styled.Text`
@@ -42,20 +42,26 @@ export const Title = styled.Text`
 `;
 
 export const Agendar = styled(RectButton)`
-   width: 60%;
+   width: 90%;
    border-radius: 12px;
    height: 60px;
-   background: #df8989;
+   background: ${cores.rosa};
    align-items: center;
    justify-content: center;
    margin-top: 30px;
+`;
+
+export const NexContainer = styled.View`
+   margin-top: 30px;
+   align-items: flex-start;
+   width: 90%;
 `;
 
 export const BodyContainer = styled.View`
    flex: 1;
    align-items: center;
    width: 100%;
-   padding: 20px;
+   padding: 7px 20px 20px 20px;
 `;
 
 export const FirstBox = styled.View`
@@ -63,9 +69,11 @@ export const FirstBox = styled.View`
    width: 100%;
    padding: 10px;
    flex-direction: row;
-   background: #e9dfe2;
+   background: ${cores.roxo};
    border-radius: 15px;
 `;
+
+export const ContainerAvatarHeader = styled.TouchableOpacity``;
 
 export const UserAvatar = styled.Image`
    width: 80px;
@@ -76,10 +84,11 @@ export const UserAvatar = styled.Image`
 `;
 
 export const ContainerText = styled.View`
-   margin-left: 15px;
+   margin-left: 35px;
 `;
 export const Description = styled.Text`
    margin-right: 20px;
+   font-size: 16px;
 `;
 
 export const Scroll = styled.ScrollView`
@@ -93,11 +102,13 @@ export const BoxAgenda = styled(FlatList as new () => FlatList<Response>)`
 `;
 
 export const HorariosContainer = styled.View`
-   margin-top: 12px;
+   margin-top: 18px;
    background: #f4f4f4;
-   height: 210px;
+   height: 150px;
    border-radius: 16px;
    width: 100%;
+   background: #fff;
+   flex-direction: row;
 
    padding: 14px 26px 10px 16px;
 `;
@@ -112,27 +123,30 @@ export const HpContainer = styled.View`
    flex: 1;
 `;
 
+export const Deteles = styled.View`
+   flex-direction: row;
+   align-items: center;
+   margin-top: 13px;
+`;
+
 export const Hp = styled.Text`
    font-size: 16px;
    color: #352e2e;
    margin-left: 10px;
-   margin-top: 10px;
 `;
 
 export const ButtonDelet = styled(RectButton)`
-   align-self: flex-end;
-   height: 40px;
-   width: 100px;
    border-radius: 10px;
-   background: #bf4e8a;
+   background: #fff;
    justify-content: center;
    align-items: center;
-   margin-bottom: 15px;
+   flex-direction: row;
 `;
 
 export const ButtonDeletText = styled.Text`
-   color: #f3f3f3;
-   font-size: 14px;
+   color: black;
+   font-size: 20px;
+   margin-left: 10px;
 `;
 
 export const BoxTwo = styled.View`
@@ -158,4 +172,10 @@ export const AvatarBox = styled.Image`
    margin-right: 10px;
 `;
 
-export const Desmarcar = styled.View``;
+export const Fundo = styled.Image`
+   position: absolute;
+   right: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+`;
