@@ -1,7 +1,9 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useCallback, useState } from 'react';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Fontisto } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
 import api from '../../services/api';
+import logo from '../../assets/fundo.png';
 
 import {
    ServiceContainer,
@@ -18,6 +20,7 @@ import {
    HomeContainer,
    Linear,
 } from './styles';
+import { Fundo } from '../Home/styles';
 
 interface RouteParams {
    providerId: string;
@@ -56,28 +59,30 @@ const SelectService: React.FC = () => {
       });
    }, [providerId]);
 
-   return (
-      <Container
-         start={{ x: 1, y: 0 }}
-         end={{ x: 0, y: 0 }}
-         locations={[0.2, 1]}
-         colors={['#EAEAEA', '#E4C6D5']}
-      >
-         <Header>
-            <Linear
-               start={{ x: 1, y: 1 }}
-               end={{ x: 0, y: 1 }}
-               colors={['#f4b7b7', '#bf4e8a']}
-            >
-               <BackButton onPress={goBack}>
-                  <Feather name="chevron-left" size={28} color="#f3f3f3" />
-               </BackButton>
+   const styles = StyleSheet.create({
+      box: {
+         shadowColor: '#8f2d2d',
+         shadowOpacity: 0.58,
+         shadowOffset: {
+            width: 0,
+            height: 12,
+         },
+         shadowRadius: 16,
+         elevation: 25,
+      },
+   });
 
-               <HeaderTitle>Pagina de Serviços</HeaderTitle>
-               <HomeContainer onPress={handleBackToHome}>
-                  <Feather name="home" size={28} color="#f3f3f3" />
-               </HomeContainer>
-            </Linear>
+   return (
+      <Container>
+         <Fundo source={logo} />
+         <Header>
+            <BackButton onPress={goBack}>
+               <Feather name="chevron-left" size={35} color="black" />
+            </BackButton>
+
+            <HomeContainer onPress={handleBackToHome}>
+               <Fontisto name="home" size={40} color="black" />
+            </HomeContainer>
          </Header>
 
          <Title>Escolha um serviço</Title>
@@ -87,15 +92,17 @@ const SelectService: React.FC = () => {
             keyExtractor={service => service.service}
             renderItem={({ item: service }) => (
                <BoxContainer
+                  style={styles.box}
                   onPress={() =>
                      navigateToCreateAppointment(service.service, providerId)
                   }
                >
                   <Box>
                      <ServiceText>{service.service}</ServiceText>
-                     <Description>Descrição: {service.description}</Description>
-                     <TextDescription>Duração: {service.time}</TextDescription>
+                     <Description> {service.description}</Description>
+                     <Description>Duração: {service.time}h</Description>
                      <Description>R$ {service.value}</Description>
+                     <TextDescription>Agende já um horário!</TextDescription>
                   </Box>
                </BoxContainer>
             )}

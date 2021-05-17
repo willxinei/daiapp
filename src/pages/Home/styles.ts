@@ -147,6 +147,7 @@ export const ButtonDeletText = styled.Text`
    color: black;
    font-size: 20px;
    margin-left: 10px;
+   color: ${cores.roxo};
 `;
 
 export const BoxTwo = styled.View`

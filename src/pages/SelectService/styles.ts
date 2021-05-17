@@ -3,39 +3,27 @@ import styled from 'styled-components/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FlatList } from 'react-native';
 import { Response } from './index';
+import { cores } from '../../utils/ferramentas';
 
-export const Container = styled(LinearGradient)`
+export const Container = styled.View`
    flex: 1;
+   background: ${cores.branco};
 `;
 
 export const Header = styled.View`
-   width: 105%;
-
-   align-self: center;
-   margin-top: -25px;
-`;
-
-export const Linear = styled(LinearGradient)`
+   height: 60px;
+   align-items: center;
    flex-direction: row;
    justify-content: space-between;
-   align-items: center;
-   border-radius: 60px;
-
-   height: 121px;
-   overflow: hidden;
-   padding: 37.6px 30px;
+   margin-top: 20px;
 `;
 
-export const BackButton = styled.TouchableOpacity``;
+export const BackButton = styled.TouchableOpacity`
+   margin-left: 30px;
+`;
 
 export const HomeContainer = styled.TouchableOpacity`
-   margin-left: 8%;
-`;
-
-export const HeaderTitle = styled.Text`
-   color: #f3f3f3;
-   font-size: 24px;
-   margin-left: 12%;
+   margin-right: 30px;
 `;
 
 export const Title = styled.Text`
@@ -55,30 +43,30 @@ export const ServiceContainer = styled(
 export const BoxContainer = styled(RectButton)``;
 
 export const Box = styled.View`
-   background: #f3f3f3;
+   background: #fff;
    margin-top: 18px;
-   height: 200px;
-
+   height: 250px;
    border-radius: 18px;
+   padding: 8px 10px 8px 10px;
 `;
 
 export const ServiceText = styled.Text`
-   align-self: center;
    margin-top: 10px;
    font-size: 20px;
-   color: #ce34d9;
+   color: ${cores.roxo};
+   margin-left: 10px;
 `;
 
 export const Description = styled.Text`
    margin-top: 20px;
    font-size: 18px;
    color: #352e2e;
-   margin-left: 15px;
+   margin-left: 25px;
 `;
 
 export const TextDescription = styled.Text`
    margin-top: 20px;
    font-size: 16px;
    color: #352e2e;
-   margin-left: 15px;
+   margin-left: 50%;
 `;
