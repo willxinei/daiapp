@@ -1,11 +1,10 @@
 /* eslint-disable camelcase */
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
+import { AntDesign, Feather, Fontisto } from '@expo/vector-icons';
 import {
    Container,
    Header,
-   HeaderTitle,
    ListContainer,
    ProviderContainer,
    ProviderName,
@@ -14,12 +13,13 @@ import {
    ProviderAvatar,
    ProviderMeta,
    ProviderMetaText,
-   Title,
    BackButton,
    HomeContainer,
-   Linear,
+   Title,
 } from './styles';
 import api from '../../services/api';
+import { Fundo } from '../Home/styles';
+import fundo from '../../assets/fundo.png';
 
 export interface Provider {
    id: string;
@@ -39,7 +39,7 @@ const Prestadores: React.FC = () => {
    );
 
    const handleBackToHome = useCallback(() => {
-      navigate('Dashboard');
+      navigate('Home');
    }, [navigate]);
 
    useEffect(() => {
@@ -47,31 +47,21 @@ const Prestadores: React.FC = () => {
          setProvider(respose.data);
       });
    }, []);
-   return (
-      <Container
-         start={{ x: 1, y: 0 }}
-         end={{ x: 0, y: 0 }}
-         locations={[0.2, 1]}
-         colors={['#EAEAEA', '#E4C6D5']}
-      >
-         <Header>
-            <Linear
-               start={{ x: 1, y: 1 }}
-               end={{ x: 0, y: 1 }}
-               colors={['#f4b7b7', '#bf4e8a']}
-            >
-               <BackButton onPress={goBack}>
-                  <Feather name="chevron-left" size={28} color="#f3f3f3" />
-               </BackButton>
 
-               <HeaderTitle>Pagina de Serviços</HeaderTitle>
-               <HomeContainer onPress={handleBackToHome}>
-                  <Feather name="home" size={28} color="#f3f3f3" />
-               </HomeContainer>
-            </Linear>
+   return (
+      <Container>
+         <Fundo source={fundo} />
+         <Header>
+            <BackButton onPress={goBack}>
+               <AntDesign name="arrowleft" size={40} color="black" />
+            </BackButton>
+
+            <HomeContainer onPress={handleBackToHome}>
+               <Fontisto name="home" size={40} color="black" />
+            </HomeContainer>
          </Header>
 
-         <Title>Prestadores</Title>
+         <Title>Escolha um pretador</Title>
 
          <ListContainer>
             <ProviderList
@@ -86,16 +76,11 @@ const Prestadores: React.FC = () => {
                         source={{ uri: `http://${provider.avatar_url}` }}
                      />
                      <ProviderInfo>
-                        <ProviderName>{provider.name}</ProviderName>
-
                         <ProviderMeta>
-                           <Feather name="calendar" size={18} color="#FF31A0" />
-                           <ProviderMetaText>Segunda à sexta</ProviderMetaText>
-                        </ProviderMeta>
-
-                        <ProviderMeta>
-                           <Feather name="clock" size={18} color="#FF31A0" />
-                           <ProviderMetaText>13h às 19h</ProviderMetaText>
+                           <ProviderName>{provider.name}</ProviderName>
+                           <ProviderMetaText>
+                              Designer de unhas
+                           </ProviderMetaText>
                         </ProviderMeta>
                      </ProviderInfo>
                   </ProviderContainer>
