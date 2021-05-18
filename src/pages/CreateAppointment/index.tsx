@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Fontisto } from '@expo/vector-icons';
 import { Alert, Text, View } from 'react-native';
-import { getDate, getMonth, getYear } from 'date-fns';
+import { format, getDate, getMonth, getYear } from 'date-fns';
 import CalendaPiker from '@react-native-community/datetimepicker';
 import { convertHours } from './Utils/StateFuncion';
 import {
@@ -26,6 +26,7 @@ import {
 } from './styles';
 
 import api from '../../services/api';
+import { Tilte } from '../SignIn/styles';
 
 interface RouteParams {
    providerId: string;
@@ -139,28 +140,18 @@ const CreateAppointment: React.FC = () => {
    }, [availability]);
 
    return (
-      <Container
-         start={{ x: 1, y: 0 }}
-         end={{ x: 0, y: 0 }}
-         locations={[0.2, 1]}
-         colors={['#EAEAEA', '#E4C6D5']}
-      >
+      <Container>
          <Header>
-            <Linear
-               start={{ x: 1, y: 1 }}
-               end={{ x: 0, y: 1 }}
-               colors={['#f4b7b7', '#bf4e8a']}
-            >
-               <BackButton onPress={goBack}>
-                  <Feather name="chevron-left" size={28} color="#f3f3f3" />
-               </BackButton>
+            <BackButton onPress={goBack}>
+               <Feather name="chevron-left" size={35} color="black" />
+            </BackButton>
 
-               <HeaderTitle>Pagina de Serviços</HeaderTitle>
-               <HomeContainer onPress={backToHome}>
-                  <Feather name="home" size={28} color="#f3f3f3" />
-               </HomeContainer>
-            </Linear>
+            <HomeContainer onPress={backToHome}>
+               <Fontisto name="home" size={40} color="black" />
+            </HomeContainer>
          </Header>
+
+         <Text>{format(new Date(), 'dd/MM/yyyy')}</Text>
 
          <Content>
             <Calendario>

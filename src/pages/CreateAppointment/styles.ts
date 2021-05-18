@@ -8,33 +8,26 @@ interface HourProps {
    select: boolean;
 }
 
-export const Container = styled(LinearGradient)`
+export const Container = styled.View`
    flex: 1;
    padding-bottom: 30px;
 `;
 
 export const Header = styled.View`
-   width: 105%;
+   width: 100%;
+   height: 70px;
+   align-items: center;
 
-   align-self: center;
-   margin-top: -25px;
-`;
-
-export const Linear = styled(LinearGradient)`
    flex-direction: row;
    justify-content: space-between;
-   align-items: center;
-   border-radius: 60px;
-
-   height: 121px;
-   overflow: hidden;
-   padding: 37.6px 30px;
 `;
 
-export const BackButton = styled.TouchableOpacity``;
+export const BackButton = styled.TouchableOpacity`
+   margin-left: 30px;
+`;
 
 export const HomeContainer = styled.TouchableOpacity`
-   margin-left: 10%;
+   margin-right: 30px;
 `;
 
 export const HeaderTitle = styled.Text`
@@ -64,7 +57,7 @@ export const SectionContente = styled.ScrollView.attrs({
 export const HourContainer = styled(RectButton)``;
 
 export const Hour = styled.View<HourProps>`
-   background: ${props => (props.select ? '#bf4e8a' : '#fdf4eb')};
+   background: ${props => (props.select ? `${cores.roxo}` : '#fff')};
    padding: 15px;
    margin-right: 8px;
    border-radius: 10px;
