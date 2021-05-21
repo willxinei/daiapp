@@ -29,11 +29,9 @@ const AgendamentoCriado: React.FC = () => {
    }, [reset]);
 
    const formattedDate = useMemo(() => {
-      return format(
-         routeParams.date,
-         "EEEE', dia' dd 'de' MMMM 'de' yyyy 'ás' HH:mm'h'",
-         { locale: ptBr },
-      );
+      return format(routeParams.date, "dd/MM/yyyy 'ás' HH:mm'h'", {
+         locale: ptBr,
+      });
    }, [routeParams]);
 
    return (
