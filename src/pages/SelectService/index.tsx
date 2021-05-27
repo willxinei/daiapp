@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useCallback, useState } from 'react';
 import { Feather, Fontisto } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import api from '../../services/api';
 import logo from '../../assets/fundo.png';
 
@@ -50,7 +50,7 @@ const SelectService: React.FC = () => {
    );
 
    const handleBackToHome = useCallback(() => {
-      navigate('Dashboard');
+      navigate('Home');
    }, [navigate]);
 
    useEffect(() => {
@@ -102,7 +102,16 @@ const SelectService: React.FC = () => {
                      <Description> {service.description}</Description>
                      <Description>Duração: {service.time}h</Description>
                      <Description>R$ {service.value}</Description>
-                     <TextDescription>Agende já um horário!</TextDescription>
+                     <View
+                        style={{
+                           alignItems: 'flex-end',
+                           paddingRight: 20,
+                           justifyContent: 'center',
+                           width: '100%',
+                        }}
+                     >
+                        <TextDescription>Agende já um horário!</TextDescription>
+                     </View>
                   </Box>
                </BoxContainer>
             )}

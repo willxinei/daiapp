@@ -45,20 +45,19 @@ export const BoxContainer = styled(RectButton)``;
 export const Box = styled.View`
    background: #fff;
    margin-top: 18px;
-   height: 250px;
    border-radius: 18px;
-   padding: 8px 10px 8px 10px;
+   padding: 8px 10px 15px 10px;
 `;
 
 export const ServiceText = styled.Text`
    margin-top: 10px;
-   font-size: 20px;
+   font-size: 24px;
    color: ${cores.roxo};
    margin-left: 10px;
 `;
 
 export const Description = styled.Text`
-   margin-top: 20px;
+   margin-top: 10px;
    font-size: 18px;
    color: #352e2e;
    margin-left: 25px;
@@ -67,6 +66,5 @@ export const Description = styled.Text`
 export const TextDescription = styled.Text`
    margin-top: 20px;
    font-size: 16px;
-   color: #352e2e;
-   margin-left: 50%;
+   color: ${cores.roxo};
 `;
