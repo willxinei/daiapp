@@ -5,9 +5,26 @@ import { cores } from '../../utils/ferramentas';
 export const Container = styled.View`
    flex: 1;
    justify-content: center;
-   background: ${cores.rosa}
+   align-items: center;
+   background: ${cores.rosa};
+   padding: 25px;
+`;
 
-   padding: 0 30px ${Platform.OS === 'android' ? 120 : 40}px;
+export const Header = styled.View`
+   height: 60px;
+   align-items: center;
+   flex-direction: row;
+   justify-content: space-between;
+   background: ${cores.rosa};
+   margin-top: 10px;
+`;
+
+export const BackButton = styled.TouchableOpacity`
+   margin-left: 30px;
+`;
+
+export const HomeContainer = styled.TouchableOpacity`
+   margin-right: 30px;
 `;
 
 export const Text = styled.Text`
@@ -16,19 +33,9 @@ export const Text = styled.Text`
    margin: 64px 0 24px;
 `;
 
-export const BackButton = styled.TouchableOpacity``;
-
-export const OffContainer = styled.View`
-   flex-direction: row;
-   padding: 25px;
-   justify-content: space-between;
-   align-items: center;
-`;
-
-export const Off = styled.TouchableOpacity``;
-
 export const UserAvatarButtom = styled.TouchableOpacity`
-   margin-top: 20px;
+   width: 187px;
+   margin-top: 30px;
 `;
 
 export const UserAvatar = styled.Image`
@@ -36,6 +43,4 @@ export const UserAvatar = styled.Image`
    background: #508373;
    height: 186px;
    border-radius: 98px;
-   margin-top: 64px;
-   align-self: center;
 `;

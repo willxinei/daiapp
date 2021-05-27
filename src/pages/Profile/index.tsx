@@ -1,14 +1,12 @@
 /* eslint-disable camelcase */
 import React, { useRef, useCallback, useState, useEffect } from 'react';
-import { Feather } from '@expo/vector-icons';
+import { AntDesign, Feather, Fontisto } from '@expo/vector-icons';
 import {
    KeyboardAvoidingView,
    ScrollView,
    Platform,
    Alert,
    View,
-   Button as RNButton,
-   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
@@ -29,8 +27,9 @@ import {
    BackButton,
    Off,
    OffContainer,
+   Header,
+   HomeContainer,
 } from './styles';
-import { cores } from '../../utils/ferramentas';
 
 interface ProfileFormData {
    name: string;
@@ -42,7 +41,6 @@ interface ProfileFormData {
 }
 
 const Profile: React.FC = () => {
-   const [image, setImage] = useState<any>();
    const formRef = useRef<FormHandles>(null);
    const navigation = useNavigation();
 
@@ -174,98 +172,93 @@ const Profile: React.FC = () => {
       }
    }, [updateUser, user.id]);
    return (
-      <>
+      <Container>
          <KeyboardAvoidingView
-            style={{ flex: 1 }}
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{ width: '100%', flex: 1 }}
+            behavior="padding"
             enabled
          >
-            <ScrollView keyboardShouldPersistTaps="handled">
-               <Container>
-                  <OffContainer>
-                     <BackButton onPress={handleGoBack}>
-                        <Feather
-                           name="chevron-left"
-                           size={26}
-                           color="#04d361"
-                        />
-                     </BackButton>
-                     <Off onPress={logOf}>
-                        <Feather name="power" size={26} color="black" />
-                     </Off>
-                  </OffContainer>
+            <ScrollView>
+               <Header>
+                  <BackButton onPress={handleGoBack}>
+                     <AntDesign name="arrowleft" size={40} color="black" />
+                  </BackButton>
 
-                  <UserAvatarButtom onPress={UpdateAvatar}>
-                     <UserAvatar source={{ uri: `${user.avatar_url}` }} />
-                  </UserAvatarButtom>
+                  <HomeContainer onPress={logOf}>
+                     <Fontisto name="power" size={40} color="black" />
+                  </HomeContainer>
+               </Header>
 
-                  <View>
-                     <Text>Meu perfil</Text>
-                  </View>
+               <UserAvatarButtom onPress={UpdateAvatar}>
+                  <UserAvatar source={{ uri: `${user.avatar_url}` }} />
+               </UserAvatarButtom>
 
-                  <Form
-                     initialData={{
-                        name: user.name,
-                        email: user.email,
-                        telefone: user.telefone,
-                     }}
-                     ref={formRef}
-                     onSubmit={handleSubmit}
-                  >
-                     <Input
-                        autoCorrect={false}
-                        name="name"
-                        icon="user"
-                        placeholder="Nome"
-                     />
+               <View>
+                  <Text>Meu perfil</Text>
+               </View>
 
-                     <Input
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="email-address"
-                        name="email"
-                        icon="mail"
-                        placeholder="E-mail"
-                     />
+               <Form
+                  initialData={{
+                     name: user.name,
+                     email: user.email,
+                     telefone: user.telefone,
+                  }}
+                  ref={formRef}
+                  onSubmit={handleSubmit}
+               >
+                  <Input
+                     autoCorrect={false}
+                     name="name"
+                     icon="user"
+                     placeholder="Nome"
+                  />
 
-                     <Input
-                        name="telefone"
-                        icon="phone"
-                        placeholder="Telefone"
-                        keyboardType="numeric"
-                     />
+                  <Input
+                     autoCapitalize="none"
+                     autoCorrect={false}
+                     keyboardType="email-address"
+                     name="email"
+                     icon="mail"
+                     placeholder="E-mail"
+                  />
 
-                     <Input
-                        secureTextEntry
-                        containerStyle={{ marginTop: 16 }}
-                        name="old_password"
-                        icon="lock"
-                        placeholder="Senha atual"
-                     />
-                     <Input
-                        secureTextEntry
-                        name="password"
-                        icon="lock"
-                        placeholder="Nova senha"
-                     />
-                     <Input
-                        secureTextEntry
-                        name="password_confirmation"
-                        icon="lock"
-                        placeholder="Confirmar senha"
-                     />
-                  </Form>
-                  <Button
-                     onPress={() => {
-                        formRef.current?.submitForm();
-                     }}
-                  >
-                     Confirmar mudanças
-                  </Button>
-               </Container>
+                  <Input
+                     name="telefone"
+                     icon="phone"
+                     placeholder="Telefone"
+                     keyboardType="numeric"
+                  />
+
+                  <Input
+                     secureTextEntry
+                     containerStyle={{ marginTop: 16 }}
+                     name="old_password"
+                     icon="lock"
+                     placeholder="Senha atual"
+                  />
+                  <Input
+                     secureTextEntry
+                     name="password"
+                     icon="lock"
+                     placeholder="Nova senha"
+                  />
+                  <Input
+                     secureTextEntry
+                     name="password_confirmation"
+                     icon="lock"
+                     placeholder="Confirmar senha"
+                  />
+               </Form>
+               <Button
+                  onPress={() => {
+                     formRef.current?.submitForm();
+                  }}
+               >
+                  Confirmar mudanças
+               </Button>
             </ScrollView>
          </KeyboardAvoidingView>
-      </>
+      </Container>
    );
 };
 
