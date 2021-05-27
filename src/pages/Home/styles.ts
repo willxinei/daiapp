@@ -65,7 +65,7 @@ export const BodyContainer = styled.View`
 `;
 
 export const FirstBox = styled.View`
-   height: 140px;
+   height: 160px;
    width: 100%;
    padding: 10px;
    flex-direction: row;
@@ -76,15 +76,15 @@ export const FirstBox = styled.View`
 export const ContainerAvatarHeader = styled.TouchableOpacity``;
 
 export const UserAvatar = styled.Image`
-   width: 80px;
-   height: 80px;
-   border-radius: 40px;
-   background: #909090;
-   margin-top: 15px;
+   width: 100px;
+   height: 100px;
+   border-radius: 50px;
+   background: ${cores.rosa};
 `;
 
 export const ContainerText = styled.View`
    margin-left: 35px;
+   width: 250px;
 `;
 export const Description = styled.Text`
    margin-right: 20px;
@@ -137,7 +137,6 @@ export const Hp = styled.Text`
 
 export const ButtonDelet = styled(RectButton)`
    border-radius: 10px;
-   background: #fff;
    justify-content: center;
    align-items: center;
    flex-direction: row;
@@ -180,3 +179,10 @@ export const Fundo = styled.Image`
    width: 100%;
    height: 100%;
 `;
+
+export const BoxOne = styled.View`
+   width: 50%;
+   justify-content: center;
+   padding: 10px;
+`;
+export const BoxT = styled.View``;

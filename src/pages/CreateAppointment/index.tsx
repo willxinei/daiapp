@@ -1,16 +1,24 @@
 /* eslint-disable camelcase */
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import Constants from 'expo-constants';
+import React, {
+   useCallback,
+   useEffect,
+   useState,
+   useMemo,
+   useRef,
+} from 'react';
 import { Feather, Fontisto } from '@expo/vector-icons';
-import { Alert, Text, View } from 'react-native';
+import { Alert, Platform, Text, View } from 'react-native';
 import { format, getDate, getMonth, getYear } from 'date-fns';
 import CalendaPiker from '@react-native-community/datetimepicker';
+import * as Notificatons from 'expo-notifications';
+import { differenceInSeconds } from 'date-fns/esm';
 import { convertHours } from './Utils/StateFuncion';
 import {
    Container,
    Header,
    BackButton,
-   HeaderTitle,
    Calendario,
    Content,
    SectionContente,
@@ -20,13 +28,11 @@ import {
    CreateAppointmentButtonText,
    HourContainer,
    HomeContainer,
-   Linear,
    OpenPikerButon,
    OpenPickerText,
 } from './styles';
 
 import api from '../../services/api';
-import { Tilte } from '../SignIn/styles';
 
 interface RouteParams {
    providerId: string;
@@ -44,6 +50,14 @@ interface AvailavilityItem {
    avaliable: boolean;
 }
 
+Notificatons.setNotificationHandler({
+   handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+   }),
+});
+
 const CreateAppointment: React.FC = () => {
    const route = useRoute();
    const routeParams = route.params as RouteParams;
@@ -56,7 +70,124 @@ const CreateAppointment: React.FC = () => {
    const [availability, setAvailability] = useState<AvailavilityItem[]>([]);
    const [selectHour, setSelectHour] = useState('');
    const [showPider, setShowPiker] = useState(false);
-   const [disponivel, setDisponivel] = useState();
+   const [expoPushToken, setExpoPushToken] = useState('');
+   const [notification, setNotification] = useState(false);
+   const notificationListener = useRef();
+   const responseListener = useRef();
+
+   // async function schedulePushNotification() {
+   //    const data = new Date();
+   //    const conver = convertHours(selectHour);
+   //    const dataAgendada = new Date(
+   //       getYear(selectDia),
+   //       getMonth(selectDia),
+   //       getDate(selectDia),
+   //       0,
+   //       conver,
+   //    );
+   //    const seconds = differenceInSeconds(dataAgendada, data);
+   //    console.log(seconds);
+
+   //    await Notificatons.scheduleNotificationAsync({
+   //       content: {
+   //          title: "You've got mail! 📬",
+   //          body: 'Here is the notification body',
+   //          data: { data: 'goes here' },
+   //       },
+   //       trigger: { seconds },
+   //    });
+   // }
+
+   // async function registerForPushNotificationsAsync() {
+   //    let token;
+   //    if (Constants.isDevice) {
+   //       const {
+   //          status: existingStatus,
+   //       } = await Notificatons.getPermissionsAsync();
+   //       let finalStatus = existingStatus;
+   //       if (existingStatus !== 'granted') {
+   //          const { status } = await Notificatons.requestPermissionsAsync();
+   //          finalStatus = status;
+   //       }
+   //       if (finalStatus !== 'granted') {
+   //          Alert.alert('Failed to get push token for push notification!');
+   //          return;
+   //       }
+   //       token = (await Notificatons.getExpoPushTokenAsync()).data;
+   //       console.log(token);
+   //    } else {
+   //       Alert.alert('Must use physical device for Push Notificatons');
+   //    }
+
+   //    if (Platform.OS === 'android') {
+   //       Notificatons.setNotificationChannelAsync('default', {
+   //          name: 'default',
+   //          importance: Notificatons.AndroidImportance.MAX,
+   //          vibrationPattern: [0, 250, 250, 250],
+   //          lightColor: '#FF231F7C',
+   //       });
+   //    }
+
+   //    // eslint-disable-next-line consistent-return
+   //    return token;
+   // }
+
+   // useEffect(() => {
+   //    registerForPushNotificationsAsync().then(token =>
+   //       setExpoPushToken(token || ''),
+   //    );
+
+   //    notificationListener.current = Notificatons.addNotificationReceivedListener(
+   //       notification => {
+   //          setNotification(notification);
+   //       },
+   //    );
+
+   //    responseListener.current = Notificatons.addNotificationResponseReceivedListener(
+   //       response => {
+   //          console.log(response);
+   //       },
+   //    );
+
+   //    return () => {
+   //       Notificatons.removeNotificationSubscription(
+   //          notificationListener.current,
+   //       );
+   //       Notificatons.removeNotificationSubscription(responseListener.current);
+   //    };
+   // }, []);
+
+   const Notification = useCallback(
+      async (hora: string) => {
+         const data = new Date();
+         const conver = convertHours(selectHour);
+         const dataAgendada = new Date(
+            getYear(selectDia),
+            getMonth(selectDia),
+            getDate(selectDia),
+            0,
+            conver,
+         );
+         const seconds = differenceInSeconds(dataAgendada, data);
+         console.log(seconds);
+
+         const notifica = await Notificatons.scheduleNotificationAsync({
+            content: {
+               title: 'Meu agendamento',
+               body: `Você tem um horario agendado pra ${selectHour}`,
+               sound: true,
+               priority: Notificatons.AndroidNotificationPriority.HIGH,
+               data: {
+                  hora,
+               },
+            },
+            trigger: { seconds },
+         });
+
+         return notifica;
+      },
+      [selectDia, selectHour],
+   );
 
    const backToHome = useCallback(() => {
       navigate('Home');
@@ -84,18 +215,26 @@ const CreateAppointment: React.FC = () => {
             service: selectService,
          });
 
+         Notification(selectHour);
+
          navigate('AgendamentoCriado', { date: time.getTime() });
       } catch (err) {
          Alert.alert('Erro ao criar agendamento', err.message);
       }
-   }, [navigate, selectHour, selectedProvider, selectDia, selectService]);
+   }, [
+      selectHour,
+      selectDia,
+      selectedProvider,
+      selectService,
+      Notification,
+      navigate,
+   ]);
 
    const availabily = useMemo(() => {
       return availability.map(({ avaliable, hour }) => {
          return {
             hour,
             avaliable,
-            hourFormatted: hour,
          };
       });
    }, [availability]);
@@ -134,8 +273,8 @@ const CreateAppointment: React.FC = () => {
    }, [selectDia, selectService, selectedProvider]);
 
    const handleDisponivel = useMemo(() => {
-      return availability.find(h => {
-         return h.avaliable === false;
+      return availability.filter(h => {
+         return h.avaliable !== false;
       });
    }, [availability]);
 
@@ -151,7 +290,7 @@ const CreateAppointment: React.FC = () => {
             </HomeContainer>
          </Header>
 
-         <Text>{format(new Date(), 'dd/MM/yyyy')}</Text>
+         <Text>{format(new Date(selectDia), 'dd/MM/yyyy')}</Text>
 
          <Content>
             <Calendario>
@@ -163,14 +302,14 @@ const CreateAppointment: React.FC = () => {
                )}
             </Calendario>
 
-            {!handleDisponivel && (
+            {handleDisponivel.length > 0 && (
                <Text style={{ marginTop: 30, fontSize: 20 }}>
                   Horários disponíveis
                </Text>
             )}
-            {handleDisponivel && (
+            {handleDisponivel.length === 0 && (
                <Text style={{ marginTop: 30, fontSize: 20 }}>
-                  {'    '}Nenhum Horário {'\n'} disponível para hoje
+                  {'         '}Nenhum Horário {'\n'} disponível para esse dia
                </Text>
             )}
 
@@ -182,17 +321,17 @@ const CreateAppointment: React.FC = () => {
                }}
             >
                <SectionContente>
-                  {availabily.map(({ hourFormatted, hour, avaliable }) => (
+                  {availabily.map(({ hour, avaliable }) => (
                      <HourContainer
                         enabled={avaliable}
                         onPress={() => handleSelectHour(hour)}
-                        key={hourFormatted}
+                        key={hour}
                      >
                         <Hour
                            available={avaliable}
                            select={selectHour === hour}
                         >
-                           <HourText>{hourFormatted}</HourText>
+                           <HourText>{hour}</HourText>
                         </Hour>
                      </HourContainer>
                   ))}

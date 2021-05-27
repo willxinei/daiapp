@@ -33,6 +33,8 @@ import {
    NexContainer,
    Fundo,
    Deteles,
+   BoxOne,
+   BoxT,
 } from './styles';
 import { useAuth } from '../../hooks/AuthContext';
 import fundo from '../../assets/fundo.png';
@@ -53,12 +55,12 @@ export interface Response {
 }
 
 const Home: React.FC = () => {
-   const data = new Date(Date.now());
-   const dataFormat = format(data, 'EEEE dd/MM/yyyy', { locale: prBr });
-
    const { user } = useAuth();
    const { goBack, navigate } = useNavigation();
    const [agendamento, setAgendamento] = useState<Response[]>([]);
+
+   const data = new Date(Date.now());
+   const dataFormat = format(data, 'EEEE dd/MM/yyyy', { locale: prBr });
 
    useEffect(() => {
       try {
@@ -190,36 +192,51 @@ const Home: React.FC = () => {
                {nexAg === undefined && <Title>Sem horarios para hoje</Title>}
                {isToday(data) && nexAg && (
                   <FirstBox>
-                     <UserAvatar
-                        source={{
-                           uri: `${nexAg.provider.avatar_url}`,
-                        }}
-                     />
-                     <ContainerText>
-                        <Title
-                           style={{
-                              marginBottom: 10,
-                              marginLeft: 30,
-                              color: `${cores.rosa}`,
-                              fontSize: 26,
-                           }}
-                        >
-                           {nexAg.provider.name}
-                        </Title>
-                        <Description>Serviço: {nexAg.service}</Description>
-                        <Description>
-                           Data: {nexAg.dia}/{nexAg.mes}/{nexAg.ano}
-                        </Description>
-                        <Description>
-                           Horário:{' '}
-                           {formatd(
-                              nexAg.ano,
-                              nexAg.mes,
-                              nexAg.dia,
-                              nexAg.from,
-                           )}
-                        </Description>
-                     </ContainerText>
+                     <BoxOne>
+                        <UserAvatar
+                           source={{ uri: nexAg.provider.avatar_url }}
+                        />
+                     </BoxOne>
+                     <BoxT>
+                        <Deteles>
+                           <SimpleLineIcons name="note" size={24} />
+
+                           <Hp>{nexAg.service}</Hp>
+                        </Deteles>
+
+                        <Deteles>
+                           <MaterialIcons name="alarm" size={24} />
+                           <Hp>
+                              {formatd(
+                                 nexAg.ano,
+                                 nexAg.mes - 1,
+                                 nexAg.dia,
+                                 nexAg.from,
+                              )}
+                           </Hp>
+                        </Deteles>
+
+                        <Deteles>
+                           <Feather name="trash-2" size={24} />
+                           <ButtonDelet
+                              onPress={() => {
+                                 handleDelete(
+                                    nexAg.dia,
+                                    nexAg.mes,
+                                    nexAg.ano,
+                                    nexAg.from,
+                                    nexAg.id,
+                                 );
+                              }}
+                           >
+                              <ButtonDeletText
+                                 style={{ color: `${cores.branco}` }}
+                              >
+                                 Desmarcar
+                              </ButtonDeletText>
+                           </ButtonDelet>
+                        </Deteles>
+                     </BoxT>
                   </FirstBox>
                )}
                <BoxAgenda
