@@ -70,92 +70,6 @@ const CreateAppointment: React.FC = () => {
    const [availability, setAvailability] = useState<AvailavilityItem[]>([]);
    const [selectHour, setSelectHour] = useState('');
    const [showPider, setShowPiker] = useState(false);
-   const [expoPushToken, setExpoPushToken] = useState('');
-   const [notification, setNotification] = useState(false);
-   const notificationListener = useRef();
-   const responseListener = useRef();
-
-   // async function schedulePushNotification() {
-   //    const data = new Date();
-   //    const conver = convertHours(selectHour);
-   //    const dataAgendada = new Date(
-   //       getYear(selectDia),
-   //       getMonth(selectDia),
-   //       getDate(selectDia),
-   //       0,
-   //       conver,
-   //    );
-   //    const seconds = differenceInSeconds(dataAgendada, data);
-   //    console.log(seconds);
-
-   //    await Notificatons.scheduleNotificationAsync({
-   //       content: {
-   //          title: "You've got mail! 📬",
-   //          body: 'Here is the notification body',
-   //          data: { data: 'goes here' },
-   //       },
-   //       trigger: { seconds },
-   //    });
-   // }
-
-   // async function registerForPushNotificationsAsync() {
-   //    let token;
-   //    if (Constants.isDevice) {
-   //       const {
-   //          status: existingStatus,
-   //       } = await Notificatons.getPermissionsAsync();
-   //       let finalStatus = existingStatus;
-   //       if (existingStatus !== 'granted') {
-   //          const { status } = await Notificatons.requestPermissionsAsync();
-   //          finalStatus = status;
-   //       }
-   //       if (finalStatus !== 'granted') {
-   //          Alert.alert('Failed to get push token for push notification!');
-   //          return;
-   //       }
-   //       token = (await Notificatons.getExpoPushTokenAsync()).data;
-   //       console.log(token);
-   //    } else {
-   //       Alert.alert('Must use physical device for Push Notificatons');
-   //    }
-
-   //    if (Platform.OS === 'android') {
-   //       Notificatons.setNotificationChannelAsync('default', {
-   //          name: 'default',
-   //          importance: Notificatons.AndroidImportance.MAX,
-   //          vibrationPattern: [0, 250, 250, 250],
-   //          lightColor: '#FF231F7C',
-   //       });
-   //    }
-
-   //    // eslint-disable-next-line consistent-return
-   //    return token;
-   // }
-
-   // useEffect(() => {
-   //    registerForPushNotificationsAsync().then(token =>
-   //       setExpoPushToken(token || ''),
-   //    );
-
-   //    notificationListener.current = Notificatons.addNotificationReceivedListener(
-   //       notification => {
-   //          setNotification(notification);
-   //       },
-   //    );
-
-   //    responseListener.current = Notificatons.addNotificationResponseReceivedListener(
-   //       response => {
-   //          console.log(response);
-   //       },
-   //    );
-
-   //    return () => {
-   //       Notificatons.removeNotificationSubscription(
-   //          notificationListener.current,
-   //       );
-   //       Notificatons.removeNotificationSubscription(responseListener.current);
-   //    };
-   // }, []);
 
    const Notification = useCallback(
       async (hora: string) => {
@@ -169,7 +83,6 @@ const CreateAppointment: React.FC = () => {
             conver,
          );
          const seconds = differenceInSeconds(dataAgendada, data);
-         console.log(seconds);
 
          const notifica = await Notificatons.scheduleNotificationAsync({
             content: {
@@ -290,7 +203,15 @@ const CreateAppointment: React.FC = () => {
             </HomeContainer>
          </Header>
 
-         <Text>{format(new Date(selectDia), 'dd/MM/yyyy')}</Text>
+         <View
+            style={{
+               paddingLeft: 35,
+            }}
+         >
+            <Text style={{ fontSize: 20 }}>
+               Data: {format(new Date(selectDia), 'dd/MM/yyyy')}
+            </Text>
+         </View>
 
          <Content>
             <Calendario>
