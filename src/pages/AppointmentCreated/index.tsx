@@ -3,6 +3,7 @@ import ptBr, { format } from 'date-fns';
 
 import React, { useCallback, useMemo } from 'react';
 import { Feather } from '@expo/vector-icons';
+import Loading from 'expo-app-loading';
 import {
    Container,
    Title,
@@ -10,6 +11,7 @@ import {
    OkButton,
    OkButtonText,
 } from './styled';
+import { Fonts } from '../../utils/ferramentas';
 
 interface RouteParams {
    date: number;
@@ -34,12 +36,19 @@ const AgendamentoCriado: React.FC = () => {
       });
    }, [routeParams]);
 
+   const font = Fonts();
+   if (!font) {
+      return <Loading />;
+   }
+
    return (
       <Container>
          <Feather name="check" size={80} color="#04d361" />
 
          <Title>Agendamento concluido</Title>
-         <Description>{formattedDate}</Description>
+         <Description style={{ fontFamily: 'MontBold' }}>
+            {formattedDate}
+         </Description>
 
          <OkButton onPress={handleOkButton}>
             <OkButtonText>Ok</OkButtonText>

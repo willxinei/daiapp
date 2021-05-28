@@ -14,6 +14,7 @@ import { format, getDate, getMonth, getYear } from 'date-fns';
 import CalendaPiker from '@react-native-community/datetimepicker';
 import * as Notificatons from 'expo-notifications';
 import { differenceInSeconds } from 'date-fns/esm';
+import Londing from 'expo-app-loading';
 import { convertHours } from './Utils/StateFuncion';
 import {
    Container,
@@ -33,6 +34,7 @@ import {
 } from './styles';
 
 import api from '../../services/api';
+import { Fonts } from '../../utils/ferramentas';
 
 interface RouteParams {
    providerId: string;
@@ -82,7 +84,8 @@ const CreateAppointment: React.FC = () => {
             0,
             conver,
          );
-         const seconds = differenceInSeconds(dataAgendada, data);
+         const sec = differenceInSeconds(dataAgendada, data);
+         console.log(sec);
 
          const notifica = await Notificatons.scheduleNotificationAsync({
             content: {
@@ -94,7 +97,7 @@ const CreateAppointment: React.FC = () => {
                   hora,
                },
             },
-            trigger: { seconds },
+            trigger: { seconds: 5 },
          });
 
          return notifica;
@@ -191,6 +194,11 @@ const CreateAppointment: React.FC = () => {
       });
    }, [availability]);
 
+   const font = Fonts();
+   if (!font) {
+      return <Londing />;
+   }
+
    return (
       <Container>
          <Header>
@@ -208,7 +216,7 @@ const CreateAppointment: React.FC = () => {
                paddingLeft: 35,
             }}
          >
-            <Text style={{ fontSize: 20 }}>
+            <Text style={{ fontSize: 20, fontFamily: 'MontBold' }}>
                Data: {format(new Date(selectDia), 'dd/MM/yyyy')}
             </Text>
          </View>
@@ -216,7 +224,9 @@ const CreateAppointment: React.FC = () => {
          <Content>
             <Calendario>
                <OpenPikerButon onPress={hendleDatePiker}>
-                  <OpenPickerText>Escolha uma data</OpenPickerText>
+                  <OpenPickerText style={{ fontFamily: 'MontBlack' }}>
+                     Escolha uma data
+                  </OpenPickerText>
                </OpenPikerButon>
                {showPider && (
                   <CalendaPiker onChange={handleChange} value={selectDia} />
@@ -224,12 +234,24 @@ const CreateAppointment: React.FC = () => {
             </Calendario>
 
             {handleDisponivel.length > 0 && (
-               <Text style={{ marginTop: 30, fontSize: 20 }}>
+               <Text
+                  style={{
+                     marginTop: 30,
+                     fontSize: 20,
+                     fontFamily: 'MontBold',
+                  }}
+               >
                   Horários disponíveis
                </Text>
             )}
             {handleDisponivel.length === 0 && (
-               <Text style={{ marginTop: 30, fontSize: 20 }}>
+               <Text
+                  style={{
+                     marginTop: 30,
+                     fontSize: 20,
+                     fontFamily: 'MontBold',
+                  }}
+               >
                   {'         '}Nenhum Horário {'\n'} disponível para esse dia
                </Text>
             )}
@@ -252,7 +274,9 @@ const CreateAppointment: React.FC = () => {
                            available={avaliable}
                            select={selectHour === hour}
                         >
-                           <HourText>{hour}</HourText>
+                           <HourText style={{ fontFamily: 'MontBold' }}>
+                              {hour}
+                           </HourText>
                         </Hour>
                      </HourContainer>
                   ))}
@@ -260,7 +284,9 @@ const CreateAppointment: React.FC = () => {
             </View>
          </Content>
          <CreateAppointmentButton onPress={handleCreateAppointment}>
-            <CreateAppointmentButtonText>Agendar</CreateAppointmentButtonText>
+            <CreateAppointmentButtonText style={{ fontFamily: 'MontBold' }}>
+               Agendar
+            </CreateAppointmentButtonText>
          </CreateAppointmentButton>
       </Container>
    );

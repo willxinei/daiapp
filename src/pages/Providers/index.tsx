@@ -2,6 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign, Feather, Fontisto } from '@expo/vector-icons';
+import AppLoading from 'expo-app-loading';
 import {
    Container,
    Header,
@@ -20,6 +21,7 @@ import {
 import api from '../../services/api';
 import { Fundo } from '../Home/styles';
 import fundo from '../../assets/fundo.png';
+import { Fonts } from '../../utils/ferramentas';
 
 export interface Provider {
    id: string;
@@ -48,6 +50,11 @@ const Prestadores: React.FC = () => {
       });
    }, []);
 
+   const fonstsLoadd = Fonts();
+   if (!fonstsLoadd) {
+      return <AppLoading />;
+   }
+
    return (
       <Container>
          <Fundo source={fundo} />
@@ -61,7 +68,9 @@ const Prestadores: React.FC = () => {
             </HomeContainer>
          </Header>
 
-         <Title>Escolha um pretador</Title>
+         <Title style={{ fontFamily: 'MontBold' }}>
+            Escolha um prestador(a)
+         </Title>
 
          <ListContainer>
             <ProviderList
@@ -77,8 +86,12 @@ const Prestadores: React.FC = () => {
                      />
                      <ProviderInfo>
                         <ProviderMeta>
-                           <ProviderName>{provider.name}</ProviderName>
-                           <ProviderMetaText>
+                           <ProviderName style={{ fontFamily: 'MontBold' }}>
+                              {provider.name}
+                           </ProviderName>
+                           <ProviderMetaText
+                              style={{ fontFamily: 'MontRegular' }}
+                           >
                               Designer de unhas
                            </ProviderMetaText>
                         </ProviderMeta>

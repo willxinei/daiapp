@@ -30,14 +30,9 @@ export const HomeContainer = styled.TouchableOpacity`
    margin-right: 30px;
 `;
 
-export const HeaderTitle = styled.Text`
-   color: #f3f3f3;
-   font-size: 20px;
-   margin-left: 5%;
-`;
-
 export const OpenPickerText = styled.Text`
    font-size: 20px;
+   color: #fff;
 `;
 
 export const Calendario = styled.View`

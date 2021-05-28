@@ -32,4 +32,5 @@ export const OkButton = styled(RectButton)`
 
 export const OkButtonText = styled.Text`
    font-size: 20px;
+   color: #fff;
 `;

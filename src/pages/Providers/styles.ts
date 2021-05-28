@@ -36,7 +36,7 @@ export const Title = styled.Text`
    align-items: center;
    align-self: center;
    margin-top: 45px;
-
+   color: black;
    font-size: 24px;
 `;
 

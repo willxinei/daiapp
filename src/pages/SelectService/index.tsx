@@ -1,7 +1,8 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useCallback, useState } from 'react';
 import { Feather, Fontisto } from '@expo/vector-icons';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import FontLoading from 'expo-app-loading';
 import api from '../../services/api';
 import logo from '../../assets/fundo.png';
 
@@ -13,14 +14,13 @@ import {
    Description,
    Title,
    Header,
-   HeaderTitle,
    BoxContainer,
    TextDescription,
    BackButton,
    HomeContainer,
-   Linear,
 } from './styles';
 import { Fundo } from '../Home/styles';
+import { Fonts } from '../../utils/ferramentas';
 
 interface RouteParams {
    providerId: string;
@@ -72,6 +72,11 @@ const SelectService: React.FC = () => {
       },
    });
 
+   const font = Fonts();
+   if (!font) {
+      return <FontLoading />;
+   }
+
    return (
       <Container>
          <Fundo source={logo} />
@@ -85,7 +90,7 @@ const SelectService: React.FC = () => {
             </HomeContainer>
          </Header>
 
-         <Title>Escolha um serviço</Title>
+         <Title style={{ fontFamily: 'MontBold' }}>Escolha um serviço</Title>
 
          <ServiceContainer
             data={respost}
@@ -98,10 +103,19 @@ const SelectService: React.FC = () => {
                   }
                >
                   <Box>
-                     <ServiceText>{service.service}</ServiceText>
-                     <Description> {service.description}</Description>
-                     <Description>Duração: {service.time}h</Description>
-                     <Description>R$ {service.value}</Description>
+                     <ServiceText style={{ fontFamily: 'MontBold' }}>
+                        {service.service}
+                     </ServiceText>
+                     <Description style={{ fontFamily: 'MontRegular' }}>
+                        {' '}
+                        {service.description}
+                     </Description>
+                     <Description style={{ fontFamily: 'MontBold' }}>
+                        Duração: <Text>{service.time}h</Text>
+                     </Description>
+                     <Description style={{ fontFamily: 'MontBold' }}>
+                        R$ {service.value}
+                     </Description>
                      <View
                         style={{
                            alignItems: 'flex-end',
@@ -110,7 +124,9 @@ const SelectService: React.FC = () => {
                            width: '100%',
                         }}
                      >
-                        <TextDescription>Agende já um horário!</TextDescription>
+                        <TextDescription style={{ fontFamily: 'MontBold' }}>
+                           Agende já um horário!
+                        </TextDescription>
                      </View>
                   </Box>
                </BoxContainer>

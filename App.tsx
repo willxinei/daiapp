@@ -1,12 +1,12 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import Routes from './src/routes';
 import AppProvider from './src/hooks';
 
-export default function App() {
+const App: React.FC = () => {
    return (
       <NavigationContainer>
          <AppProvider>
@@ -17,4 +17,6 @@ export default function App() {
          </AppProvider>
       </NavigationContainer>
    );
-}
+};
+
+export default App;

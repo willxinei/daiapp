@@ -27,7 +27,8 @@ export const Header = styled.View`
 `;
 
 export const TitleName = styled.Text`
-   font-size: 24px;
+   font-size: 20px;
+   color: black;
 `;
 
 export const Avatar = styled.Image`
@@ -39,13 +40,14 @@ export const Avatar = styled.Image`
 
 export const Title = styled.Text`
    font-size: 20px;
+   color: #fff;
 `;
 
 export const Agendar = styled(RectButton)`
    width: 90%;
    border-radius: 12px;
    height: 60px;
-   background: ${cores.rosa};
+   background: ${cores.roxo};
    align-items: center;
    justify-content: center;
    margin-top: 30px;
@@ -69,7 +71,7 @@ export const FirstBox = styled.View`
    width: 100%;
    padding: 10px;
    flex-direction: row;
-   background: ${cores.roxo};
+   background: #b490ac;
    border-radius: 15px;
 `;
 

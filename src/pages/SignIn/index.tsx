@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
-import {
-   Alert,
-   Animated,
-   KeyboardAvoidingView,
-   Platform,
-   ScrollView,
-   StyleSheet,
-} from 'react-native';
+import { Alert, Animated, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -81,6 +74,10 @@ const SingIn: React.FC = () => {
       navigate('SignUp');
    }, [navigate]);
 
+   const SendMail = useCallback(() => {
+      navigate('Send');
+   }, [navigate]);
+
    useEffect(() => {
       Animated.parallel([
          Animated.spring(offSet.y, {
@@ -150,7 +147,7 @@ const SingIn: React.FC = () => {
                </CriarContaText>
             </BackContainer>
          </Animated.View>
-         <Forgot>
+         <Forgot onPress={SendMail}>
             <ForgotText>Esqueci minha senha</ForgotText>
          </Forgot>
       </Container>

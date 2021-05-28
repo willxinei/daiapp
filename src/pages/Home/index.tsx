@@ -8,7 +8,7 @@ import { Alert, Image, Text } from 'react-native';
 import { Feather, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
 import { format, intervalToDuration, isAfter } from 'date-fns';
 import prBr from 'date-fns/locale/pt-BR';
-
+import AppLoading from 'expo-app-loading';
 import { useNavigation } from '@react-navigation/core';
 import { isToday } from 'date-fns/esm';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -39,7 +39,7 @@ import {
 import { useAuth } from '../../hooks/AuthContext';
 import fundo from '../../assets/fundo.png';
 import api from '../../services/api';
-import { cores } from '../../utils/ferramentas';
+import { cores, Fonts } from '../../utils/ferramentas';
 
 export interface Response {
    ano: number;
@@ -60,7 +60,7 @@ const Home: React.FC = () => {
    const [agendamento, setAgendamento] = useState<Response[]>([]);
 
    const data = new Date(Date.now());
-   const dataFormat = format(data, 'EEEE dd/MM/yyyy', { locale: prBr });
+   const dataFormat = format(data, 'iiii dd/MM/yyyy', { locale: prBr });
 
    useEffect(() => {
       try {
@@ -162,34 +162,58 @@ const Home: React.FC = () => {
       return format(new Date(ano, mes, dia, 0, from), 'HH:mm');
    }
 
+   const fonstsLoadd = Fonts();
+   if (!fonstsLoadd) {
+      return <AppLoading />;
+   }
+
    return (
       <>
          <Container>
             <Fundo source={fundo} />
             <Header>
-               <TitleName>
+               <TitleName style={{ fontFamily: 'MontBold' }}>
                   Ola...{'\n'}
-                  <Text>{user.name}</Text>
+                  <Text style={{ fontFamily: 'MontRegular' }}>{user.name}</Text>
                </TitleName>
                <TouchableOpacity onPress={navigateProfile}>
                   <Avatar source={{ uri: `${user.avatar_url}` }} />
                </TouchableOpacity>
             </Header>
 
-            <Title style={{ marginTop: 15 }}>{dataFormat}</Title>
+            <Title
+               style={{
+                  color: 'black',
+                  marginTop: 15,
+                  fontFamily: 'MontRegular',
+               }}
+            >
+               {dataFormat}
+            </Title>
 
             <Agendar onPress={navigateToSelectProviders}>
-               <Title style={{ color: '#000', fontSize: 20 }}>
+               <Title
+                  style={{
+                     fontFamily: 'MontRegular',
+                     fontSize: 20,
+                  }}
+               >
                   Agendar um horário
                </Title>
             </Agendar>
 
             <NexContainer>
-               <Text style={{ fontSize: 20 }}>Horário a seguir</Text>
+               <Text style={{ fontSize: 20, fontFamily: 'MontBold' }}>
+                  Horário a seguir
+               </Text>
             </NexContainer>
 
             <BodyContainer>
-               {nexAg === undefined && <Title>Sem horarios para hoje</Title>}
+               {nexAg === undefined && (
+                  <Title style={{ color: 'black', fontFamily: 'MontRegular' }}>
+                     Sem horarios para hoje
+                  </Title>
+               )}
                {isToday(data) && nexAg && (
                   <FirstBox>
                      <BoxOne>
@@ -197,16 +221,19 @@ const Home: React.FC = () => {
                            source={{ uri: nexAg.provider.avatar_url }}
                         />
                      </BoxOne>
+
                      <BoxT>
                         <Deteles>
                            <SimpleLineIcons name="note" size={24} />
 
-                           <Hp>{nexAg.service}</Hp>
+                           <Hp style={{ fontFamily: 'MontRegular' }}>
+                              {nexAg.service}
+                           </Hp>
                         </Deteles>
 
                         <Deteles>
                            <MaterialIcons name="alarm" size={24} />
-                           <Hp>
+                           <Hp style={{ fontFamily: 'MontRegular' }}>
                               {formatd(
                                  nexAg.ano,
                                  nexAg.mes - 1,
@@ -230,7 +257,10 @@ const Home: React.FC = () => {
                               }}
                            >
                               <ButtonDeletText
-                                 style={{ color: `${cores.branco}` }}
+                                 style={{
+                                    color: `${cores.branco}`,
+                                    fontFamily: 'MontBold',
+                                 }}
                               >
                                  Desmarcar
                               </ButtonDeletText>
@@ -249,7 +279,9 @@ const Home: React.FC = () => {
                               <Deteles>
                                  <SimpleLineIcons name="note" size={24} />
 
-                                 <Hp>{h.service}</Hp>
+                                 <Hp style={{ fontFamily: 'MontBold' }}>
+                                    {h.service}
+                                 </Hp>
                               </Deteles>
 
                               <Deteles>
@@ -282,7 +314,11 @@ const Home: React.FC = () => {
                                        );
                                     }}
                                  >
-                                    <ButtonDeletText>Desmarcar</ButtonDeletText>
+                                    <ButtonDeletText
+                                       style={{ fontFamily: 'MontBold' }}
+                                    >
+                                       Desmarcar
+                                    </ButtonDeletText>
                                  </ButtonDelet>
                               </Deteles>
                            </HpContainer>

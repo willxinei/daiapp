@@ -1,6 +1,5 @@
 import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { FlatList } from 'react-native';
 import { Response } from './index';
 import { cores } from '../../utils/ferramentas';
@@ -30,7 +29,7 @@ export const Title = styled.Text`
    align-items: center;
    align-self: center;
    margin-top: 50px;
-
+   color: black;
    font-size: 26px;
 `;
 
