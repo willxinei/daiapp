@@ -84,8 +84,7 @@ const CreateAppointment: React.FC = () => {
             0,
             conver,
          );
-         const sec = differenceInSeconds(dataAgendada, data);
-         console.log(sec);
+         const sec = differenceInSeconds(dataAgendada, data) - 60 * 60;
 
          const notifica = await Notificatons.scheduleNotificationAsync({
             content: {
@@ -97,7 +96,7 @@ const CreateAppointment: React.FC = () => {
                   hora,
                },
             },
-            trigger: { seconds: 5 },
+            trigger: { seconds: sec },
          });
 
          return notifica;
@@ -170,23 +169,29 @@ const CreateAppointment: React.FC = () => {
    }, []);
 
    useEffect(() => {
-      const dat = new Date(selectDia);
-      const dia = getDate(dat);
-      const mes = getMonth(dat) + 1;
-      const ano = getYear(dat);
+      try {
+         const dat = new Date(selectDia);
+         const dia = getDate(dat);
+         const mes = getMonth(dat) + 1;
+         const ano = getYear(dat);
 
-      api.get(`agendamento/h/horarios`, {
-         params: {
-            provider_id: selectedProvider,
-            mes,
-            ano,
-            dia,
-            service: selectService,
-         },
-      }).then(response => {
-         setAvailability(response.data);
-      });
+         api.get(`agendamento/h/horarios`, {
+            params: {
+               provider_id: selectedProvider,
+               mes,
+               ano,
+               dia,
+               service: selectService,
+            },
+         }).then(response => {
+            setAvailability(response.data);
+         });
+      } catch (err) {
+         Alert.alert(err.message);
+      }
    }, [selectDia, selectService, selectedProvider]);
+
+   console.log(availability);
 
    const handleDisponivel = useMemo(() => {
       return availability.filter(h => {

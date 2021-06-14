@@ -5,7 +5,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Image, Text } from 'react-native';
-import { Feather, SimpleLineIcons, MaterialIcons } from '@expo/vector-icons';
+import {
+   Feather,
+   SimpleLineIcons,
+   MaterialIcons,
+   Fontisto,
+} from '@expo/vector-icons';
 import { format, intervalToDuration, isAfter } from 'date-fns';
 import prBr from 'date-fns/locale/pt-BR';
 import AppLoading from 'expo-app-loading';
@@ -64,7 +69,7 @@ const Home: React.FC = () => {
 
    useEffect(() => {
       try {
-         api.get('agendamento/me').then(h => {
+         api.get('/agendamento/me').then(h => {
             setAgendamento(h.data);
          });
       } catch (err) {
@@ -77,7 +82,6 @@ const Home: React.FC = () => {
          const dia = new Date(h.ano, h.mes - 1, h.dia, 0, h.from);
 
          if (isAfter(dia, new Date())) {
-            console.log(dia, new Date());
             return h;
          }
       });
@@ -119,19 +123,16 @@ const Home: React.FC = () => {
                await api.delete(`agendamento/${id}/agendamento`);
 
                setAgendamento(agendamento.filter(h => h.id !== id));
-            } catch (err) {
-               console.log(err);
-            }
+            } catch (err) {}
          }
 
          const dateNow = new Date();
          const dateAgendada = new Date(ano, mes - 1, dia, 0, horario);
-         const canpare: any =
+         const canpare =
             intervalToDuration({
                start: dateNow,
                end: dateAgendada,
             }).hours + 1;
-         console.log(canpare);
 
          if (canpare <= 2) {
             Alert.alert(
@@ -240,6 +241,13 @@ const Home: React.FC = () => {
                                  nexAg.dia,
                                  nexAg.from,
                               )}
+                           </Hp>
+                        </Deteles>
+
+                        <Deteles>
+                           <Fontisto name="date" size={24} />
+                           <Hp>
+                              {nexAg.dia}/{nexAg.mes}
                            </Hp>
                         </Deteles>
 

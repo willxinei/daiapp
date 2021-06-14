@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { Form } from '@unform/mobile';
+import { string } from 'yup/lib/locale';
 import { Container, Tilte, BackContainer } from './styles';
 import Input from '../../components/Input';
 import Logo from '../../assets/Lg.png';
@@ -34,11 +35,11 @@ const SingUp: React.FC = () => {
             const shema = Yup.object().shape({
                name: Yup.string().required('Nome obrigatorio'),
                email: Yup.string()
-                  .required('E-mail Obrigatorio')
+                  .required('E-mail obrigatorio')
                   .email('Digite um email valido'),
                telefone: Yup.number()
-                  .min(11, 'telefone invalido')
-                  .required('telefone obrigatorio'),
+                  .required('telefone obrigatorio')
+                  .min(11, 'telefone invalido'),
                password: Yup.string()
                   .required('Senha obrigatoria')
                   .min(6, 'No minimo 6 digitos'),
@@ -48,7 +49,7 @@ const SingUp: React.FC = () => {
                abortEarly: false,
             });
 
-            await api.post('/user', {
+            const response = await api.post('/user', {
                name: data.name,
                email: data.email,
                telefone: data.telefone,
@@ -56,23 +57,21 @@ const SingUp: React.FC = () => {
                prestador: false,
             });
 
-            Alert.alert(
-               'Cadastro realizado com sucesso!',
-               'Você ja pode fazer login na aplicação',
-            );
-
-            goBack();
+            if (response.data === 'Email ja existe') {
+               Alert.alert('Erro', 'Esse emal já existe, tente outro email');
+            } else {
+               Alert.alert('Cadastro realiazado com sucesso!');
+               goBack();
+            }
          } catch (err) {
             if (err instanceof Yup.ValidationError) {
                const errors = getValidationErrors(err);
                formRef.current?.setErrors(errors);
+               Alert.alert(err.message);
 
                return;
             }
-            Alert.alert(
-               'Erro no cadastro',
-               'Ocorreu um erro ao tentar fazer o cadastro',
-            );
+            Alert.alert('Erro', err.message);
          }
       },
       [goBack],

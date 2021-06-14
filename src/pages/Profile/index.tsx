@@ -134,6 +134,8 @@ const Profile: React.FC = () => {
       [navigation, updateUser],
    );
 
+   console.log(user.avatar_url);
+
    useEffect(() => {
       (async () => {
          if (Platform.OS !== 'web') {
@@ -171,6 +173,7 @@ const Profile: React.FC = () => {
          });
       }
    }, [updateUser, user.id]);
+
    return (
       <Container>
          <KeyboardAvoidingView

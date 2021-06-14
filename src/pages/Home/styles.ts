@@ -67,7 +67,6 @@ export const BodyContainer = styled.View`
 `;
 
 export const FirstBox = styled.View`
-   height: 160px;
    width: 100%;
    padding: 10px;
    flex-direction: row;

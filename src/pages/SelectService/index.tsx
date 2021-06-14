@@ -54,9 +54,13 @@ const SelectService: React.FC = () => {
    }, [navigate]);
 
    useEffect(() => {
-      api.get(`/${providerId}/list`).then(response => {
-         setRespost(response.data);
-      });
+      api.get(`/${providerId}/list`)
+         .then(response => {
+            setRespost(response.data);
+         })
+         .then(h => {
+            console.log(h);
+         });
    }, [providerId]);
 
    const styles = StyleSheet.create({

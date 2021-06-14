@@ -2,11 +2,22 @@
   "name": "daiapp",
   "displayName": "daiapp",
   "expo": {
-    "name": "daiapp",
+    "name": "Daisy Nails",
+    "icon": "./assets/Logo.png",
+    "splash": {
+      "image": "./assets/Logo.png",
+      "resizeMode": "contain"
+    },
     "slug": "daiapp",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "app.com"
+    }
+  },
+  "android": {
+    "package": "com.app-com.digital"
   }
 }
